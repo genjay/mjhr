@@ -53,11 +53,24 @@ class DepartmentsController < ApplicationController
 
   # DELETE /departments/1
   # DELETE /departments/1.json
+
   def destroy
     @department.destroy
+      respond_to do |format|
+        format.html { redirect_to departments_url, notice: 'Department was successfully destroyed.' }
+        format.json { head :no_content }
+      end
+  end 
+
+  def del_selected  
     respond_to do |format|
-      format.html { redirect_to departments_url, notice: 'Department was successfully destroyed.' }
-      format.json { head :no_content }
+      if Department.destroy(params[:ids])
+        format.html { redirect_to departments_url, notice: 'Department was successfully destroyed.' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to departments_url, notice: @department.errors}
+        format.json { render json: @department.errors, status: :unprocessable_entity }
+      end
     end
   end
 
